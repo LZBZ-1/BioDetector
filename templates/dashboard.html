@@ -1,0 +1,188 @@
+<!-- templates/dashboard.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - {{ bacteria_name }}</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .visualization {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Análisis de {{ bacteria_name }}</h1>
+            <a href="/" class="back-button">← Volver</a>
+        </div>
+
+        <div class="summary">
+            <div>
+                <h3>Total de Estudios</h3>
+                <p>{{ summary.total_studies }}</p>
+            </div>
+            <div>
+                <h3>Período</h3>
+                <p>{{ summary.time_period }}</p>
+            </div>
+            <div>
+                <h3>Países</h3>
+                <p>{{ summary.countries }}</p>
+            </div>
+            <div>
+                <h3>Multi-resistencia</h3>
+                <p>{{ summary.multi_resistance }} estudios</p>
+            </div>
+            <!-- Agregar a la sección summary -->
+            <div>
+                <h3>Top 3 Países</h3>
+                {% for country, count in summary.top_countries.items() %}
+                    <p>{{ country }}: {{ count }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                <h3>Top 3 Antibióticos</h3>
+                {% for antibiotic, count in summary.top_antibiotics.items() %}
+                    <p>{{ antibiotic }}: {{ count }}</p>
+                {% endfor %}
+            </div>
+            <div>
+                <h3>Estudios con MIC</h3>
+                <p>{{ summary.mic_studies }}</p>
+            </div>
+            <div>
+                <h3>Patrones de Resistencia</h3>
+                <p>{{ summary.total_patterns }}</p>
+            </div>
+        </div>
+
+        <!-- Visualizaciones principales -->
+        <div class="visualization">
+            <h2>Distribución Global de Estudios</h2>
+            <div id="world-map"></div>
+        </div>
+
+        <div class="visualization">
+            <h2>Antibióticos Más Estudiados</h2>
+            <div id="antibiotics-chart"></div>
+        </div>
+
+        <div class="visualization">
+            <h2>Evolución Temporal</h2>
+            <div id="timeline-chart"></div>
+        </div>
+
+        <!-- Visualizaciones adicionales -->
+        <div class="visualization">
+            <h2>Co-ocurrencia de Antibióticos</h2>
+            <div id="cooccurrence"></div>
+        </div>
+
+        <div class="visualization">
+            <h2>Multi-resistencia por País</h2>
+            <div id="multi-resistance"></div>
+        </div>
+
+        <div class="visualization">
+            <h2>Valores MIC por País</h2>
+            <div id="mic-distribution"></div>
+        </div>
+
+        <div class="visualization">
+            <h2>Tendencias por Antibiótico</h2>
+            <div id="trends"></div>
+        </div>
+
+        <div class="visualization">
+            <h2>Jerarquía de Estudios</h2>
+            <div id="hierarchy"></div>
+        </div>
+
+        <div class="visualization">
+            <h2>Evolución Temporal por Antibiótico</h2>
+            <div id="temporal-heat"></div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar visualizaciones
+        var visualizations = {{ visualizations|tojson }};
+
+        // Cargar mapa mundial
+        Plotly.newPlot('world-map',
+            JSON.parse(visualizations.map).data,
+            JSON.parse(visualizations.map).layout);
+
+        // Cargar gráfico de antibióticos
+        Plotly.newPlot('antibiotics-chart',
+            JSON.parse(visualizations.antibiotics).data,
+            JSON.parse(visualizations.antibiotics).layout);
+
+        // Cargar timeline
+        Plotly.newPlot('timeline-chart',
+            JSON.parse(visualizations.timeline).data,
+            JSON.parse(visualizations.timeline).layout);
+
+        // Cargar visualizaciones adicionales
+        if (visualizations.cooccurrence) {
+            Plotly.newPlot('cooccurrence',
+                JSON.parse(visualizations.cooccurrence).data,
+                JSON.parse(visualizations.cooccurrence).layout);
+        }
+
+        if (visualizations.multi_resistance) {
+            Plotly.newPlot('multi-resistance',
+                JSON.parse(visualizations.multi_resistance).data,
+                JSON.parse(visualizations.multi_resistance).layout);
+        }
+
+        if (visualizations.mic_distribution) {
+            Plotly.newPlot('mic-distribution',
+                JSON.parse(visualizations.mic_distribution).data,
+                JSON.parse(visualizations.mic_distribution).layout);
+        }
+
+        if (visualizations.trends) {
+            Plotly.newPlot('trends',
+                JSON.parse(visualizations.trends).data,
+                JSON.parse(visualizations.trends).layout);
+        }
+
+        if (visualizations.hierarchy) {
+            Plotly.newPlot('hierarchy',
+                JSON.parse(visualizations.hierarchy).data,
+                JSON.parse(visualizations.hierarchy).layout);
+        }
+
+        if (visualizations.temporal_heat) {
+            Plotly.newPlot('temporal-heat',
+                JSON.parse(visualizations.temporal_heat).data,
+                JSON.parse(visualizations.temporal_heat).layout);
+        }
+    </script>
+</body>
+</html>

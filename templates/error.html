@@ -1,0 +1,33 @@
+<!-- templates/error.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error - Análisis de Resistencia</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 100px auto;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .error-message {
+            color: #d32f2f;
+            margin: 20px 0;
+        }
+        .back-button {
+            padding: 10px 20px;
+            background-color: #666;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Oops! Algo salió mal</h1>
+        <p class="error-message">{{ message }}</p>
+        <a href="/" class="back-button">Volver al inicio</a>
+    </div>
+</body>
+</html>
